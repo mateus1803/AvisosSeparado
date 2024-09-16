@@ -1,0 +1,34 @@
+<!-- add_birthday.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Aniversariantes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Adicionar Aniversariantes</h1>
+        <form action="/admin/add_aniversario" method="post" onsubmit="return validateBirthdayForm()">
+            <!-- Campos do formulário -->
+            <!-- Formulário para adicionar aniversariantes -->
+            <h2 class="mt-5">Adicionar Aniversariantes</h2>
+            <form action="/admin/add_birthday" method="post" onsubmit="return validateBirthdayForm()">
+                <div class="form-group">
+                    <label for="birthday_name">Nome do Aniversariante:</label>
+                    <input type="text" class="form-control" id="birthday_name" name="birthday_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="birthday_date">Data de Aniversário:</label>
+                    <input type="date" class="form-control" id="birthday_date" name="birthday_date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Aniversariante</button>
+            </form>
+        </form>
+    </div>
+</body>
+
+</html>

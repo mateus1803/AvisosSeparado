@@ -1,0 +1,41 @@
+<!-- Tabela de Informações -->
+<h2 class="mt-5">Informações</h2>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Título</th>
+            <th>Conteúdo</th>
+            <th>Data de Criação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for info in infos %}
+        <tr>
+            <td>{{ info.title }}</td>
+            <td>{{ info.content }}</td>
+            <td>{{ info.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Tabela de Aniversários -->
+<h2 class="mt-5">Aniversários</h2>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Nome</th>
+            <th>Data</th>
+            <th>Data de Criação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for birthday in birthdays %}
+        <tr>
+            <td>{{ birthday.name }}</td>
+            <td>{{ birthday.date.strftime('%d/%m/%Y') }}</td>
+            <td>{{ birthday.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

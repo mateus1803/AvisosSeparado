@@ -1,0 +1,196 @@
+@keyframes blink-animation {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes blink {
+    10% { opacity: 1; color: black; }
+    50% { opacity: 0; color: rgb(255, 0, 0); }
+    100% { opacity: 1; color: black; }
+}
+
+h1 {
+    animation: blink 1s infinite;
+    font-size: 25px; /* Aumenta o tamanho da fonte */
+}
+
+body {
+    background-image: url('/static/images/back.png');
+}
+
+/* Estilo do Menu */
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    padding: 10px 20px;
+    z-index: 1000;
+    text-align: center;
+    font-size: 20px; /* Aumenta o tamanho da fonte do menu */
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #007bff;
+    transition: background-color 0.3s;
+    font-size: 20px; /* Aumenta o tamanho da fonte dos links no menu */
+}
+
+.menu a:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo da Mensagem */
+.message {
+    background-color: #0d01b2fc; /* Azul mais suave */
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 20px; /* Aumenta o tamanho da fonte das mensagens */
+}
+
+/* Centralizar o container de mensagens */
+#messages-container {
+    max-width: 700px;
+    margin: 10px auto;
+    padding: 10px;
+    background-color: #ffffffb0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgb(250, 0, 0);
+}
+
+
+/* Estilo da Data e Hora */
+.date-time {
+    font-size: 20px; /* Aumenta o tamanho da fonte da data e hora */
+    font-weight: bold;
+    color: #ff5733;
+    background-color: #0a0404;
+    border: 2px solid #ff5733;
+    border-radius: 8px;
+    padding: 8px;
+    display: inline-block;
+    box-shadow: 0 0 10px rgba(255, 87, 51, 0.5);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.date-time:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .date-time { font-size: 24px; padding: 6px; }
+}
+
+@media (max-width: 480px) {
+    .date-time { font-size: 22px; padding: 4px; }
+}
+
+/* Fundo do Corpo */
+body {
+    background-color: #f2f2f2;
+}
+
+/* Estilo do Cabeçalho */
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 30px; /* Aumenta o tamanho da fonte do cabeçalho */
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #00fcef;
+    font-size: 25px; /* Aumenta o tamanho da fonte do cabeçalho */
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilo do Container de Informações e Aniversários */
+.info-container,
+.birthday-container {
+    position: fixed;
+    top: 20%;
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-container {
+    left: 0;
+}
+
+.birthday-container {
+    right: 0;
+}
+
+/* Botões dos Containers */
+.btn-info,
+.btn-warning {
+    width: 100%;
+    border-radius: 0;
+}
+
+.info-content,
+.birthday-content {
+    display: none;
+    padding: 20px;
+    color: #333;
+}
+
+/* Estilo para a animação de visibilidade */
+.collapsed {
+    display: none;
+}
+
+/* Estilo do Container de Informações */
+.info-container {
+    background-color: #d1e7dd; /* Cor de fundo mais suave */
+    border: 1px solid #c3e6cb; /* Borda suave */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 18px; /* Tamanho da fonte ajustado */
+}
+
+/* Estilo do Container de Aniversários */
+.birthday-container {
+    background-color: #d6e9f5; /* Cor de fundo mais suave */
+    border: 1px solid #b8daff; /* Borda suave */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 18px; /* Tamanho da fonte ajustado */
+}
+
+/* Estilo do Container de Avisos */
+.message-container {
+    background-color: #ffffff; /* Cor de fundo branca */
+    border: 1px solid #ddd; /* Borda suave */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste de Margens dos Containers */
+.info-container, .birthday-container {
+    margin-left: 10px; /* Aproxima das bordas laterais */
+    margin-right: 10px; /* Aproxima das bordas laterais */
+}

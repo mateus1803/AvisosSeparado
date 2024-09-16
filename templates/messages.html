@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/iconedesite1.png') }}" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-bootstrap.css') }}">
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+</head>
+
+<body>
+    <header class="bg-dark text-white py-2 mb-4">
+        <!-- Menu -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">Página Inicial</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/message_history">Ver Histórico de Avisos</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5 pt-5">
+        <h1 class="text-center">Avisos</h1>
+        <div class="d-flex justify-content-between">
+            <!-- Container de Informações -->
+            <div id="info-container" class="info-container">
+                <button class="btn btn-info" id="toggle-info">Informações</button>
+                <div class="info-content" style="display: none;">
+                    <h2>Informações</h2>
+                    <!-- Informações serão atualizadas aqui -->
+                    <div id="info-messages">
+                        {% for message in info_messages %}
+                        <p>{{ message.content }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container de Aniversários -->
+            <div id="birthday-container" class="birthday-container">
+                <button class="btn btn-warning" id="toggle-birthday">Aniversários</button>
+                <div class="birthday-content" style="display: none;">
+                    <h2>Aniversários</h2>
+                    <!-- Aniversários serão atualizados aqui -->
+                    <div id="birthday-messages">
+                        {% for birthday in birthdays %}
+                        <p>{{ birthday.name }} - {{ birthday.date }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container Principal de Mensagens -->
+            <div id="messages-container" class="message-container">
+                {% for message in messages %}
+                <p>{{ message.content }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Formulário para Adicionar Informações -->
+        <div class="mt-4">
+            <h2>Adicionar Informação</h2>
+            <form action="{{ url_for('add_info_route') }}" method="post">
+                <div class="form-group">
+                    <label for="info-title">Título</label>
+                    <input type="text" class="form-control" id="info-title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="info-content">Conteúdo</label>
+                    <textarea class="form-control" id="info-content" name="content" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Informação</button>
+            </form>
+        </div>
+
+        <!-- Formulário para Adicionar Aniversários -->
+        <div class="mt-4">
+            <h2>Adicionar Aniversário</h2>
+            <form action="{{ url_for('add_birthday_route') }}" method="post">
+                <div class="form-group">
+                    <label for="birthday-name">Nome</label>
+                    <input type="text" class="form-control" id="birthday-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="birthday-date">Data</label>
+                    <input type="date" class="form-control" id="birthday-date" name="date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Aniversário</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/historico.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+
+    <!-- Script para controlar a visibilidade dos containers e configurar o Socket.IO -->
+    <script>
+        $(document).ready(function() {
+            $('#toggle-info').click(function() {
+                $('#info-container .info-content').toggle();
+            });
+            $('#toggle-birthday').click(function() {
+                $('#birthday-container .birthday-content').toggle();
+            });
+
+            // Configurar o Socket.IO
+            const socket = io();
+
+            // Manipulador de evento para curtidas
+            $('.like-btn').click(function() {
+                const messageId = $(this).data('message-id');
+                socket.emit('like_message', { message_id: messageId });
+            });
+
+            // Atualizar contagem de curtidas quando recebidas do servidor
+            socket.on('update_likes', function(data) {
+                const messageId = data.message_id;
+                const likes = data.likes;
+                $(`.message .like-btn[data-message-id="${messageId}"]`).siblings('.likes-count').text(likes);
+            });
+
+            // Opcional: tratar mensagens de erro ou sucesso
+            socket.on('connect_error', function() {
+                alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+            });
+
+            // Configuração para alternar a visibilidade do container de informações
+            $('#toggle-info').click(function() {
+                $('#info-container .info-content').toggle();
+            });
+
+            // Escutar o evento `new_info` e atualizar o container de informações
+            socket.on('new_info', function(data) {
+                const newInfoHtml = `<p><strong>${data.title}:</strong> ${data.content}</p>`;
+                $('#info-container .info-content').append(newInfoHtml);
+            });
+
+            // Escutar o evento `new_birthday` e atualizar o container de aniversários
+            socket.on('new_birthday', function(data) {
+                const newBirthdayHtml = `<p>${data.name} - ${data.date}</p>`;
+                $('#birthday-messages').append(newBirthdayHtml);
+            });
+        });
+    </script>
+</body>
+</html>

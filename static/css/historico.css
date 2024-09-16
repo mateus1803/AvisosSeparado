@@ -1,0 +1,287 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/static/images/resolvidos.png');
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    /* Mantém a imagem de fundo fixa */
+}
+
+header {
+    background-color: #333;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap;
+    /* Permite que os elementos dentro do header se organizem em várias linhas, se necessário */
+}
+
+header .back-button {
+    background-color: #0d01b2fc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header .back-button:hover {
+    background-color: #0056b3;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centraliza verticalmente */
+    width: 100%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(223, 3, 3, 0.2);
+    padding: 30px;
+    background-color: #ffffffb0;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgb(250, 0, 0);
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 30px;
+}
+
+h3 {
+    color: #007bff;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+p {
+    color: #28a745;
+    font-size: 20px;
+    text-align: center;
+}
+
+.message {
+    background-color: #0020af;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 100%; /* Ajuste conforme necessário */
+    box-sizing: border-box;
+    box-shadow: 0 0 5px rgba(0, 0, 16, 0.6);
+    text-align: center; /* Centraliza o conteúdo das mensagens */
+}
+
+.message h3 {
+    color: #00fcef;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.message p {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    display: none;
+    z-index: 9999;
+}
+
+.popup {
+    margin-bottom: 15px;
+}
+
+.popup h3 {
+    color: #007bff;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.popup p {
+    font-size: 16px;
+    margin: 0;
+}
+
+.filter-container {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.filter-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.filter-container input[type="text"],
+.filter-container input[type="date"],
+.filter-container button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.filter-container button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-container button:hover {
+    background-color: #45a049;
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+    }
+
+    .container {
+        width: 95%;
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    h1,
+    h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    p,
+    .message p {
+        font-size: 16px;
+    }
+
+    .message h3 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    h1,
+    h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    p,
+    .message p {
+        font-size: 14px;
+    }
+
+    .message h3 {
+        font-size: 22px;
+    }
+
+    .popup-container {
+        width: 90%;
+        max-width: 300px;
+    }
+
+    .filter-container {
+        width: 100%;
+    }
+}
+
+/* Estilo para centralizar o texto */
+.centered-text {
+    text-align: center;
+    display: block;
+}
+
+/* Estilo para destacar a data e o horário */
+.datetime-highlight {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff5733;
+    background-color: #0a0404;
+    border: 2px solid #ff5733;
+    border-radius: 8px;
+    padding: 8px;
+    display: inline-block;
+    box-shadow: 0 0 10px rgba(255, 87, 51, 0.5);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+    
+    /* Centraliza o elemento horizontalmente */
+    margin: 0 auto;
+    
+    /* Centraliza o elemento verticalmente */
+    line-height: 1.5; /* Ajuste conforme necessário para centralizar verticalmente */
+}
+
+.datetime-highlight:hover {
+    transform: scale(1.05);
+}
+
+/* Animação de piscar se desejado */
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.priority-green {
+    color: green;
+}

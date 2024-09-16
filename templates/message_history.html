@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Avisos Resolvidos</title>
+    <link rel="icon" href="static/images/iconedesite1.png" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/historico.css') }}">
+</head>
+
+<body>
+    <header>
+        <button class="back-button" onclick="window.history.back()">Voltar</button>
+    </header>
+    
+    <div class="container">
+        <div class="filter-container">
+            <!-- Apenas os campos de data e o botão de filtro -->
+            <input type="date" id="filter-start-date" placeholder="Data de início">
+            <input type="date" id="filter-end-date" placeholder="Data de término">
+            <button id="filter-button">Filtrar</button>
+        </div>
+        <div id="resolved-messages-container">
+            <!-- As mensagens resolvidas serão carregadas aqui -->
+        </div>
+    </div>
+
+    <!-- Inclusão do jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclusão do Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <!-- Inclusão do script customizado -->
+    <script src="{{ url_for('static', filename='js/historico.js') }}"></script>
+</body>
+
+</html>

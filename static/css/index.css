@@ -1,0 +1,110 @@
+body {
+    background-image: url('/static/images/fotodabct.png');
+    background-size: cover; /* Garante que a imagem cubra todo o fundo */
+    background-position: center;
+    background-attachment: fixed; /* Mantém a imagem de fundo fixa */
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Alteração para manter o conteúdo no centro da tela */
+}
+
+@keyframes blink {
+    20% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes grow {
+    0% { font-size: 30px; }
+    50% { font-size: 30px; }
+    100% { font-size: 30px; }
+}
+strong{
+font-size: 40px;   
+font-weight: bold;
+color: rgb(229, 255, 0);
+animation: blink 1s infinite alternate, grow 1s infinite alternate;
+
+}
+
+
+
+h1, h2 {
+    font-size: 30px; /* Aumenta o tamanho do título */
+    margin-bottom: 10px; /* Reduz o espaço entre os títulos */
+    color: #ffffff;
+    background-color: #1b3d9b;
+    border-radius: 10px;
+    padding: 15px 30px; /* Aumenta o espaçamento interno */
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+h2{
+    font-size: 20px;
+}
+
+h1:hover, h2:hover {
+    background-color: #280057;
+    box-shadow: 0 0 10px rgba(0, 4, 255, 0.5);
+}
+
+a {
+    text-decoration: none;
+    font-size: bold;
+    color: #ffffff;     
+    font-size: 26px;
+    margin-bottom: 30px; /* Aumenta o espaço abaixo do link */
+    background-color: rgb(214, 8, 8);
+    padding: 20px 40px; /* Aumenta o tamanho do botão */
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #ff3300;
+}
+
+#login-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 80%; /* Ajusta a largura da caixa de login */
+    max-width: 400px; /* Define uma largura máxima */
+    margin-top: 30px; /* Aumenta o espaço acima do formulário */
+}
+
+#login-form input {
+    width: calc(100% - 40px); /* Ajusta a largura do input */
+    padding: 15px;
+    margin: 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 20px;
+}
+
+#login-form button {
+    width: 100%; /* Ajusta a largura do botão */
+    padding: 15px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+#login-form button:hover {
+    background-color: #0056b3;
+}

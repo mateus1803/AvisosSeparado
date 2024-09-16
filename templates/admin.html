@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Aviso</title>
+    <link rel="icon" href="static/images/iconedesite1.png" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</head>
+
+<body>
+    <header class="mb-4">
+        <div class="container">
+            <img src="static/images/banner.png" alt="Logo" class="img-fluid">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/">Página Inicial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin">Enviar Avisos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/messages">Ver Mensagens</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/add_info">Adicionar Informações</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/add_aniversario">Adicionar Aniversariantes</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dropdown para selecionar o tipo de conteúdo -->
+        <h1 class="mb-4">Enviar
+            <select id="contentType" onchange="toggleForm()">
+                <option value="aviso">Aviso</option>
+                <option value="informacao">Informação</option>
+                <option value="aniversario">Aniversário</option>
+            </select>
+        </h1>
+
+        <!-- Formulário para Enviar Aviso -->
+        <form id="formAviso" action="/admin" method="post" onsubmit="return validateForm('formAviso')">
+            <div class="form-group">
+                <label for="title">Título:</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Conteúdo:</label>
+                <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="priority">Situação:</label>
+                <select class="form-control" id="priority" name="priority" required>
+                    <option value="com problema">Com Problema</option>
+                    <option value="manutenção">Manutenção</option>
+                    <option value="resolvido">Resolvido</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="autor">Nome:</label>
+                <select class="form-control" id="autor" name="autor" required>
+                    <option value="">Selecione...</option>
+                    <option value="Guilherme">Guilherme</option>
+                    <option value="Ivan">Ivan</option>
+                    <option value="Gabriel">Gabriel</option>
+                    <option value="Rayssa">Rayssa</option>
+                    <option value="Carlos">Carlos</option>
+                    <option value="Mateus">Mateus</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Aviso</button>
+
+            <!-- Tabela de Avisos com Problema -->
+            <h2 class="mt-5">Avisos com Problema</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Conteúdo</th>
+                        <th>Situação</th>
+                        <th>Autor</th>
+                        <th>Data e Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="messages">
+                    {% for message in messages %}
+                    <tr id="message-{{ message[0] }}">
+                        <td>{{ message[1] }}</td>
+                        <td>{{ message[2] }}</td>
+                        <td>{{ message[3] }}</td>
+                        <td>{{ message[6] }}</td>
+                        <td>{{ message[4] }}</td>
+                        <td>
+                            <a href="/edit_message/{{ message[0] }}" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-edit"></i> Editar</a>
+                            <form action="/delete_message/{{ message[0] }}" method="post" class="d-inline"
+                                onsubmit="return confirmDelete()">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                    Excluir</button>
+                            </form>
+                            <form action="/resolve_message/{{ message[0] }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i>
+                                    Resolver</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Tabela de Avisos de Manutenção -->
+            <h2 class="mt-5">Avisos de Manutenção</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Conteúdo</th>
+                        <th>Situação</th>
+                        <th>Autor</th>
+                        <th>Data e Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="maintenance-messages">
+                    {% for message in maintenance_messages %}
+                    <tr id="message-{{ message[0] }}">
+                        <td>{{ message[1] }}</td>
+                        <td>{{ message[2] }}</td>
+                        <td>{{ message[3] }}</td>
+                        <td>{{ message[6] }}</td>
+                        <td>{{ message[4] }}</td>
+                        <td>
+                            <a href="/edit_message/{{ message[0] }}" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-edit"></i> Editar</a>
+                            <form action="/delete_message/{{ message[0] }}" method="post" class="d-inline"
+                                onsubmit="return confirmDelete()">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                    Excluir</button>
+                            </form>
+                            {% if priority != 'resolvido' %}
+                            <form action="/resolve_message/{{ message[0] }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i>
+                                    Resolver</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Tabela de Avisos Resolvidos -->
+            <h2 class="mt-5">Avisos Resolvidos</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Conteúdo</th>
+                        <th>Situação</th>
+                        <th>Autor</th>
+                        <th>Data e Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="resolved-messages">
+                    {% for message in resolved_messages %}
+                    <tr id="message-{{ message[0] }}">
+                        <td>{{ message[1] }}</td>
+                        <td>{{ message[2] }}</td>
+                        <td>{{ message[3] }}</td>
+                        <td>{{ message[6] }}</td>
+                        <td>{{ message[4] }}</td>
+                        <td>
+                            <a href="/edit_message/{{ message[0] }}" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-edit"></i> Editar</a>
+                            <form action="/delete_message/{{ message[0] }}" method="post" class="d-inline"
+                                onsubmit="return confirmDelete()">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                    Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+
+
+
+    <!-- Formulário para Enviar Informação -->
+    <div class="container">
+        <form id="formInformacao" action="/admin/add_info" method="post" style="display:none;"
+            onsubmit="return validateForm('formInformacao')">
+            <div class="form-group">
+                <label for="infoTitle">Título da Informação:</label>
+                <input type="text" class="form-control" id="infoTitle" name="infoTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="infoContent">Conteúdo da Informação:</label>
+                <textarea class="form-control" id="infoContent" name="infoContent" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Informação</button>
+
+
+            <!-- Tabela de Informações -->
+            <h2 class="mt-5">Informações</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Conteúdo</th>
+                        <th>Data e Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="information-messages">
+                    {% for info in information_messages %}
+                    <tr id="info-{{ info[0] }}">
+                        <td>{{ info[1] }}</td>
+                        <td>{{ info[2] }}</td>
+                        <td>{{ info[3] }}</td>
+                        <td>
+                            <a href="/edit_info/{{ info[0] }}" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-edit"></i> Editar</a>
+                            <form action="/delete_info/{{ info[0] }}" method="post" class="d-inline"
+                                onsubmit="return confirmDelete()">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                    Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="container">
+        <!-- Formulário para Enviar Aniversário -->
+        <form id="formAniversario" action="/admin/add_aniversario" method="post" style="display:none;"
+            onsubmit="return validateForm('formAniversario')">
+            <div class="form-group">
+                <label for="nomeAniversariante">Nome do Aniversariante:</label>
+                <input type="text" class="form-control" id="nomeAniversariante" name="nomeAniversariante" required>
+            </div>
+            <div class="form-group">
+                <label for="dataAniversario">Data do Aniversário:</label>
+                <input type="date" class="form-control" id="dataAniversario" name="dataAniversario" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Aniversário</button>
+            <!-- Tabela de Aniversários -->
+            <h2 class="mt-5">Aniversários</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Data de Aniversário</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="birthday-messages">
+                    {% for birthday in birthday_messages %}
+                    <tr id="birthday-{{ birthday[0] }}">
+                        <td>{{ birthday[1] }}</td>
+                        <td>{{ birthday[2] }}</td>
+                        <td>
+                            <a href="/edit_birthday/{{ birthday[0] }}" class="btn btn-warning btn-sm"><i
+                                    class="fas fa-edit"></i> Editar</a>
+                            <form action="/delete_birthday/{{ birthday[0] }}" method="post" class="d-inline"
+                                onsubmit="return confirmDelete()">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                    Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+    <!-- Função JavaScript para alternar formulários -->
+    <script>
+        function toggleForm() {
+            const contentType = document.getElementById('contentType').value;
+            document.getElementById('formAviso').style.display = contentType === 'aviso' ? 'block' : 'none';
+            document.getElementById('formInformacao').style.display = contentType === 'informacao' ? 'block' : 'none';
+            document.getElementById('formAniversario').style.display = contentType === 'aniversario' ? 'block' : 'none';
+        }
+
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            let valid = true;
+
+            // Verifica se todos os campos obrigatórios estão preenchidos
+            Array.from(form.elements).forEach(function (element) {
+                if (element.required && !element.value) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    valid = false;
+                }
+            });
+
+            return valid;
+        }
+    </script>
+</body>
+
+</html>
