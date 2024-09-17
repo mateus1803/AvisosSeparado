@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +20,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div class="container">
                 <a class="navbar-brand" href="/">Página Inicial</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -38,13 +40,13 @@
         <div class="d-flex justify-content-between">
             <!-- Container de Informações -->
             <div id="info-container" class="info-container">
-                <button class="btn btn-info" id="toggle-info">Informações</button>
+                <div class="btn btn-info" id="toggle-info">Informações</div>
                 <div class="info-content" style="display: none;">
                     <h2>Informações</h2>
                     <!-- Informações serão atualizadas aqui -->
                     <div id="info-messages">
-                        {% for message in info_messages %}
-                        <p>{{ message.content }}</p>
+                        {% for info in info_messages %}
+                        <p><strong>{{ info.title }}:</strong> {{ info.content }} ({{ info.datetime }})</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -52,7 +54,7 @@
 
             <!-- Container de Aniversários -->
             <div id="birthday-container" class="birthday-container">
-                <button class="btn btn-warning" id="toggle-birthday">Aniversários</button>
+                <div class="btn btn-warning" id="toggle-birthday">Aniversários</div>
                 <div class="birthday-content" style="display: none;">
                     <h2>Aniversários</h2>
                     <!-- Aniversários serão atualizados aqui -->
@@ -67,100 +69,170 @@
             <!-- Container Principal de Mensagens -->
             <div id="messages-container" class="message-container">
                 {% for message in messages %}
-                <p>{{ message.content }}</p>
+                <div class="message">
+                    <p>{{ message.content }}</p>
+                    <button class="like-btn btn btn-outline-primary" data-message-id="{{ message.id }}">Curtir</button>
+                    <span class="likes-count">{{ message.likes }}</span>
+                </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Formulário para Adicionar Informações -->
-        <div class="mt-4">
-            <h2>Adicionar Informação</h2>
-            <form action="{{ url_for('add_info_route') }}" method="post">
-                <div class="form-group">
-                    <label for="info-title">Título</label>
-                    <input type="text" class="form-control" id="info-title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="info-content">Conteúdo</label>
-                    <textarea class="form-control" id="info-content" name="content" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Adicionar Informação</button>
-            </form>
-        </div>
+        <!-- jQuery, Popper.js, and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- Custom JS -->
+        <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 
-        <!-- Formulário para Adicionar Aniversários -->
-        <div class="mt-4">
-            <h2>Adicionar Aniversário</h2>
-            <form action="{{ url_for('add_birthday_route') }}" method="post">
-                <div class="form-group">
-                    <label for="birthday-name">Nome</label>
-                    <input type="text" class="form-control" id="birthday-name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="birthday-date">Data</label>
-                    <input type="date" class="form-control" id="birthday-date" name="date" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Adicionar Aniversário</button>
-            </form>
-        </div>
-    </div>
+        <!-- Script para controlar a visibilidade dos containers e configurar o Socket.IO -->
+        <script>
+            $(document).ready(function () {
+                $('#toggle-info').click(function () {
+                    $('#info-container .info-content').toggle();
+                });
+                $('#toggle-birthday').click(function () {
+                    $('#birthday-container .birthday-content').toggle();
+                });
 
-    <!-- jQuery, Popper.js, and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/historico.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+                // Configurar o Socket.IO
+                const socket = io();
 
-    <!-- Script para controlar a visibilidade dos containers e configurar o Socket.IO -->
-    <script>
-        $(document).ready(function() {
-            $('#toggle-info').click(function() {
-                $('#info-container .info-content').toggle();
-            });
-            $('#toggle-birthday').click(function() {
-                $('#birthday-container .birthday-content').toggle();
-            });
+                // Manipulador de evento para curtidas
+                $('.like-btn').click(function () {
+                    const messageId = $(this).data('message-id');
+                    socket.emit('like_message', { message_id: messageId });
+                });
 
-            // Configurar o Socket.IO
-            const socket = io();
+                // Atualizar contagem de curtidas quando recebidas do servidor
+                socket.on('update_likes', function (data) {
+                    const messageId = data.message_id;
+                    const likes = data.likes;
+                    $(`.message .like-btn[data-message-id="${messageId}"]`).siblings('.likes-count').text(likes);
+                });
 
-            // Manipulador de evento para curtidas
-            $('.like-btn').click(function() {
-                const messageId = $(this).data('message-id');
-                socket.emit('like_message', { message_id: messageId });
-            });
+                // Opcional: tratar mensagens de erro ou sucesso
+                socket.on('connect_error', function () {
+                    alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+                });
 
-            // Atualizar contagem de curtidas quando recebidas do servidor
-            socket.on('update_likes', function(data) {
-                const messageId = data.message_id;
-                const likes = data.likes;
-                $(`.message .like-btn[data-message-id="${messageId}"]`).siblings('.likes-count').text(likes);
-            });
+                // Escutar o evento `new_info` e atualizar o container de informações
+                socket.on('new_info', function (data) {
+                    if (data && data.title && data.content && data.datetime) {
+                        const newInfoHtml = `<p><strong>${data.title}:</strong> ${data.content} (${data.datetime})</p>`;
+                        $('#info-messages').append(newInfoHtml);
+                    }
+                });
 
-            // Opcional: tratar mensagens de erro ou sucesso
-            socket.on('connect_error', function() {
-                alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
-            });
+                // Escutar o evento `new_birthday` e atualizar o container de aniversários
+                socket.on('new_birthday', function (data) {
+                    if (data && data.name && data.date) {
+                        const newBirthdayHtml = `<p>${data.name} - ${data.date}</p>`;
+                        $('#birthday-messages').append(newBirthdayHtml);
+                    }
+                });
 
-            // Configuração para alternar a visibilidade do container de informações
-            $('#toggle-info').click(function() {
-                $('#info-container .info-content').toggle();
+                // Carregar informações ao carregar a página
+                function loadInformation() {
+                    fetch('/get_information')
+                        .then(response => response.json())
+                        .then(data => {
+                            const container = $('#info-messages');
+                            container.empty();  // Limpa o container antes de adicionar novas informações
+                            data.forEach(info => {
+                                if (info.title && info.content && info.datetime) {
+                                    const infoElement = `<p><strong>${info.title}:</strong> ${info.content} (${info.datetime})</p>`;
+                                    container.append(infoElement);
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Erro ao carregar informações:', error));
+                }
+
+                loadInformation();
             });
 
             // Escutar o evento `new_info` e atualizar o container de informações
-            socket.on('new_info', function(data) {
-                const newInfoHtml = `<p><strong>${data.title}:</strong> ${data.content}</p>`;
-                $('#info-container .info-content').append(newInfoHtml);
+            socket.on('new_info', function (data) {
+                console.log('Received new_info:', data);  // Adicione este log
+                if (data && data.title && data.content && data.datetime) {
+                    const newInfoHtml = `<p><strong>${data.title}:</strong> ${data.content} (${data.datetime})</p>`;
+                    $('#info-messages').append(newInfoHtml);
+                }
             });
 
             // Escutar o evento `new_birthday` e atualizar o container de aniversários
-            socket.on('new_birthday', function(data) {
-                const newBirthdayHtml = `<p>${data.name} - ${data.date}</p>`;
-                $('#birthday-messages').append(newBirthdayHtml);
+            socket.on('new_birthday', function (data) {
+                console.log('Received new_birthday:', data);  // Adicione este log
+                if (data && data.name && data.date) {
+                    const newBirthdayHtml = `<p>${data.name} - ${data.date}</p>`;
+                    $('#birthday-messages').append(newBirthdayHtml);
+                }
             });
-        });
-    </script>
+
+
+            document.addEventListener('DOMContentLoaded', function() {
+    function loadInformation() {
+        fetch('/get_information')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dados recebidos:', data);  // Adicione este log
+                const container = document.getElementById('info-container');
+                container.innerHTML = '';  // Limpa o container antes de adicionar novas informações
+                data.forEach(info => {
+                    const infoElement = document.createElement('div');
+                    infoElement.className = 'info-item';  // Adicione uma classe para estilização
+                    infoElement.innerHTML = `<h3>${info.title}</h3><p>${info.content}</p><small>${info.datetime}</small>`;
+                    container.appendChild(infoElement);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar informações:', error));
+    }
+    
+    // Carregar informações ao carregar a página
+    loadInformation();
+});
+
+    // Atualizar a tabela de informações ao receber um evento 'info_updated' do servidor
+socket.on('info_updated', function (data) {
+    var info_id = data.info_id;
+    var title = data.title;
+    var content = data.content;
+    var datetime = data.datetime;
+
+    var infoRow = document.getElementById('info-' + info_id);
+    if (infoRow) {
+        infoRow.innerHTML = `
+            <td>${title}</td>
+            <td>${content}</td>
+            <td>${datetime}</td>
+            <td>
+                <a href="/edit_info/${info_id}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                <form action="/delete_info/${info_id}" method="post" class="d-inline" onsubmit="return confirmDeleteInfo()">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Excluir</button>
+                </form>
+            </td>`;
+    } else {
+        var newRow = document.createElement('tr');
+        newRow.id = 'info-' + info_id;
+        newRow.innerHTML = `
+            <td>${title}</td>
+            <td>${content}</td>
+            <td>${datetime}</td>
+            <td>
+                <a href="/edit_info/${info_id}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                <form action="/delete_info/${info_id}" method="post" class="d-inline" onsubmit="return confirmDeleteInfo()">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Excluir</button>
+                </form>
+            </td>`;
+        document.getElementById('info-messages').appendChild(newRow);
+    }
+});
+
+
+
+        </script>
+    </div>
 </body>
+
 </html>

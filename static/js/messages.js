@@ -51,6 +51,33 @@ function handleLikeClick(messageId) {
     }
 }
 
+
+
+/////////////////////////////////////////////////////////atualizaçõess/////////////////////////////
+$(document).ready(function() {
+    $('#toggle-info').click(function() {
+        $('#info-container .info-content').toggle();
+    });
+    $('#toggle-birthday').click(function() {
+        $('#birthday-container .birthday-content').toggle();
+    });
+
+    // Configuração do Socket.IO
+    const socket = io();
+
+    // Escuta eventos de novos conteúdos
+    socket.on('new_info', function(data) {
+        const newInfoHtml = `<p><strong>${data.title}:</strong> ${data.content}</p>`;
+        $('#info-messages').append(newInfoHtml);
+    });
+
+    socket.on('new_birthday', function(data) {
+        const newBirthdayHtml = `<p>${data.name} - ${data.date}</p>`;
+        $('#birthday-messages').append(newBirthdayHtml);
+    });
+});
+///////////////////////////////////////////////////////////////////////////
+
 // Função para renderizar mensagens no DOM
 function renderMessages(messages) {
     const messagesContainer = document.getElementById('messages-container');

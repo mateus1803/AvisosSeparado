@@ -16,7 +16,7 @@ create_tables()
 setup_routes(app)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='192.168.1.58')
+    socketio.run(app, debug=True, host='192.168.1.2')
 
    
     socketio.init_app(app)
